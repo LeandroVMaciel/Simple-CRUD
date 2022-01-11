@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+        CRUD com JavaScript!
+    </title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+</head>
+
+<body>
+    <div class="container-fuid">
+        <div class="row">
+            <div class="col-md-12">
+                <h2 style="text-align: center;">
+                    CRUD Simples<br>
+                    <h3 style="text-align: center;">Crud mais simples possível</h3>
+                </h2>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <button type="button" class="btn btn-primary" style="float: right;" data-bs-toggle="modal"
+                data-bs-target="#exampleModal">Cadastrar Aluno</button>
+        </div>
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Página de Cadastro</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body">
+
+                        <label>Nome Completo!!</label>
+                        <label id="nomeErro">Você deve preencher os dados corretamente.</label><br>
+                        <input type="text" id="nomeAluno" placeholder="Digite seu nome."><br>
+
+                        <label>Telefone!</label><br>
+                        <input type="text" id="telefone" placeholder="Digite seu telefone."><br>
+
+                        <label>Data de Nascimento!</label><br>
+                        <input type="date" id="dtNasc"><br>
+
+                        <label>Data de Cadastro!</label><br>
+                        <input type="date" id="dtCadastro"><br>
+
+                        <label>Nota final do Curso!</label><br>
+                        <input type="text" id="notaCurso" placeholder="Curso"><br>
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" onclick="enviaCadastro()"
+                            data-bs-dismiss="modal">Cadastrar</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <table>
+        <tr>
+
+            <td>
+                <table class="list" id="listaAluno">
+                    <thead>
+                        <tr>
+                            <th style="width: 300px;">Nome Completo.</th>
+                            <th style="width: 150px;">Telefone.</th>
+                            <th style="width: 180px;">Data de Nascimento.</th>
+                            <th style="width: 180px;">Data de Cadastro.</th>
+                            <th style="width: 180px;">Nota final do Curso.</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    </table>
+    <script>
+        var selectedRow = null
+
+        function enviaCadastro() {
+            if (validarAluno()) {
+                var formData = readAluno();
+                if (selectedRow == null)
+                    creatNovoAluno(formData);
+                else
+                    updateAluno(formData);
+                resetTabela();
+            }
+        }
+
+        function validarAluno() {
+            isValid = true;
+            if (document.getElementById("nomeAluno").value == "") {
+                isValid = false;
+                document.getElementById("nomeErro").classList.remove("hide");
+            } else {
+                isValid = true;
+                if (!document.getElementById("nomeErro").classList.contains("hide"))
+                    document.getElementById("nomeErro").classList.add("hide");
+            }
+            return isValid;
+        }
+
+        function creatNovoAluno(data) {
+            var table = document.getElementById("listaAluno").getElementsByTagName('tbody')[0];
+            var newRow = table.insertRow(table.length);
+            cell1 = newRow.insertCell(0);
+            cell1.innerHTML = data.nomeAluno;
+            cell2 = newRow.insertCell(1);
+            cell2.innerHTML = data.telefone;
+            cell3 = newRow.insertCell(2);
+            cell3.innerHTML = data.dtNasc;
+            cell4 = newRow.insertCell(3);
+            cell4.innerHTML = data.dtCadastro;
+            cell5 = newRow.insertCell(4);
+            cell5.innerHTML = data.notaCurso;
+            cell6 = newRow.insertCell(5);
+            cell6.innerHTML =
+                `<button type="button" class="btn btn-primary" style="width: 50px;" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick="editarAluno(this)">&larr;</button>
+                       <button type="button" class="btn btn-danger" style="width: 50px;" onClick="deletarAluno(this)">X</button>`;
+        }
+
+        function resetTabela() {
+            document.getElementById("nomeAluno").value = "";
+            document.getElementById("telefone").value = "";
+            document.getElementById("dtNasc").value = "";
+            document.getElementById("dtCadastro").value = "";
+            document.getElementById("notaCurso").value = "";
+            selectedRow = null;
+        }
+
+        function readAluno() {
+            var formData = {};
+            formData["nomeAluno"] = document.getElementById("nomeAluno").value;
+            formData["telefone"] = document.getElementById("telefone").value;
+            formData["dtNasc"] = document.getElementById("dtNasc").value;
+            formData["dtCadastro"] = document.getElementById("dtCadastro").value;
+            formData["notaCurso"] = document.getElementById("notaCurso").value;
+            return formData;
+        }
+
+        function editarAluno(td) {
+            selectedRow = td.parentElement.parentElement;
+            document.getElementById("nomeAluno").value = selectedRow.cells[0].innerHTML;
+            document.getElementById("telefone").value = selectedRow.cells[1].innerHTML;
+            document.getElementById("dtNasc").value = selectedRow.cells[2].innerHTML;
+            document.getElementById("dtCadastro").value = selectedRow.cells[3].innerHTML;
+            document.getElementById("notaCurso").value = selectedRow.cells[4].innerHTML;
+        }
+
+        function updateAluno(formData) {
+            selectedRow.cells[0].innerHTML = formData.nomeAluno;
+            selectedRow.cells[1].innerHTML = formData.telefone;
+            selectedRow.cells[2].innerHTML = formData.dtNasc;
+            selectedRow.cells[3].innerHTML = formData.dtCadastro;
+            selectedRow.cells[4].innerHTML = formData.notaCurso;
+        }
+
+        function deletarAluno(td) {
+            if (confirm('Tem certeza de que deseja excluir o Aluno?')) {
+                row = td.parentElement.parentElement;
+                document.getElementById("listaAluno").deleteRow(row.rowIndex);
+                resetTabela();
+            }
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous">
+    </script>
+</body>
+
+</html>
